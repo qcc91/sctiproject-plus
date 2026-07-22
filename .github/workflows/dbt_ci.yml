@@ -26,6 +26,16 @@ jobs:
     name: dbt Project Check
     runs-on: ubuntu-latest
 
+    env:
+      DBT_PROFILES_DIR: ${{ github.workspace }}/.dbt
+
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+      SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -39,10 +49,41 @@ jobs:
       - name: Sync Dependencies
         run: uv sync --locked
 
+      - name: Create dbt Profile and Private Key
+        shell: bash
+        run: |
+          mkdir -p "$DBT_PROFILES_DIR"
+
+          printf '%s\n' "$SNOWFLAKE_PRIVATE_KEY" \
+            > "$DBT_PROFILES_DIR/dbt_airflow_ci_private_key.p8"
+
+          chmod 600 "$DBT_PROFILES_DIR/dbt_airflow_ci_private_key.p8"
+
+          cat > "$DBT_PROFILES_DIR/profiles.yml" <<EOF
+          scti_dbt:
+            target: ci
+
+            outputs:
+              ci:
+                type: snowflake
+                account: "${SNOWFLAKE_ACCOUNT}"
+                user: "${SNOWFLAKE_USER}"
+                role: "${SNOWFLAKE_ROLE}"
+                database: "${SNOWFLAKE_DATABASE}"
+                warehouse: "${SNOWFLAKE_WAREHOUSE}"
+                schema: CI
+                threads: 4
+                private_key_path: "${DBT_PROFILES_DIR}/dbt_airflow_ci_private_key.p8"
+          EOF
+
       - name: Install dbt Packages
         working-directory: scti_dbt
-        run: uv run dbt deps
+        run: uv run dbt deps --target ci
+
+      - name: Validate Snowflake Connection
+        working-directory: scti_dbt
+        run: uv run dbt debug --target ci
 
       - name: Parse dbt Project
         working-directory: scti_dbt
-        run: uv run dbt parse
+        run: uv run dbt parse --target ci
