@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: stg_customer
+    description: "Cleaned customer data from RAW.customer."
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+      - name: email
+        tests:
+          - not_null
+
+      - name: country
+        tests:
+          - accepted_values:
+              values: ['NZ', 'AU']
+
+      - name: source_system
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['SQLSERVER_ODS']
+
+      - name: load_timestamp
+        tests:
+          - not_null

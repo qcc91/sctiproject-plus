@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: fct_claim
+    description: "Claim fact table at claim-level grain."
+    columns:
+      - name: claim_id
+        tests:
+          - not_null
+          - unique
+
+      - name: policy_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_policy')
+                field: policy_id
+
+      - name: claim_number
+        tests:
+          - not_null
+          - unique
+
+      - name: claim_status
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['approved', 'pending', 'rejected', 'under review']
+
+      - name: claim_amount
+        tests:
+          - not_null
+
+      - name: approval_ratio
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "between 0 and 1"

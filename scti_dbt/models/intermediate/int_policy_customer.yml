@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_policy_customer
+    description: "Policy enriched with customer attributes."
+    columns:
+      - name: policy_id
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: premium_amount
+        tests:
+          - not_null
+
+      - name: policy_duration_days
+        tests:
+          - not_null

@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: int_customer
+    description: "Customer-level intermediate model with derived customer attributes."
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+      - name: full_name
+        tests:
+          - not_null
+
+      - name: age
+        tests:
+          - not_null
+
+      - name: age_group
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Minor', 'Young Adult', 'Adult', 'Senior']
+
+      - name: country
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['NZ', 'AU']
+
+      - name: load_timestamp
+        tests:
+          - not_null

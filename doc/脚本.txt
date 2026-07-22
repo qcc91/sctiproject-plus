@@ -1,0 +1,17 @@
+--1.进入容器
+docker run -it `
+  --name sctiproject-plus-dbt `
+  -v "${PWD}:/workspace" `
+  -w /workspace/dbt `
+  python:3.13 bash
+
+--2.下载包件
+apt update
+apt install -y git curl
+pip install uv
+
+--3.初始化项目
+uv init --bare
+
+--4.安装dbt
+uv add dbt-core dbt-snowflake

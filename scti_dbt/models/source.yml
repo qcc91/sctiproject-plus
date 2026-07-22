@@ -1,0 +1,80 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw data ingested from SQL Server ODS into Snowflake."
+    database: SCTIPROJECT_PLUS
+    schema: RAW
+
+    tables:
+      - name: customer
+        identifier: customer
+        description: "Raw customer data from SQL Server ODS."
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+              - unique
+        config:
+          loaded_at_field: load_timestamp
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
+            error_after:
+              count: 48
+              period: hour
+
+      - name: policy
+        identifier: policy
+        description: "Raw policy data from SQL Server ODS."
+        columns:
+          - name: policy_id
+            tests:
+              - not_null
+              - unique
+        config:
+          loaded_at_field: load_timestamp
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
+            error_after:
+              count: 48
+              period: hour
+
+      - name: claim
+        identifier: claim
+        description: "Raw claim data from SQL Server ODS."
+        columns:
+          - name: claim_id
+            tests:
+              - not_null
+              - unique
+        config:
+          loaded_at_field: load_timestamp
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
+            error_after:
+              count: 48
+              period: hour
+
+      - name: payment
+        identifier: payment
+        description: "Raw payment data from SQL Server ODS."
+        columns:
+          - name: payment_id
+            tests:
+              - not_null
+              - unique
+        config:
+          loaded_at_field: load_timestamp
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
+            error_after:
+              count: 48
+              period: hour

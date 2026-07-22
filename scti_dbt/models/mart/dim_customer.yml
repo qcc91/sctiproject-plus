@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: "Customer dimension for BI reporting. PII fields are excluded."
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+      - name: full_name
+        tests:
+          - not_null
+
+      - name: country
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['NZ', 'AU']
+
+      - name: age_group
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Minor', 'Young Adult', 'Adult', 'Senior']

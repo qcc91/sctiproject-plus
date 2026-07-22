@@ -1,0 +1,28 @@
+version: 2
+
+snapshots:
+  - name: scd_raw_policy
+    relation: source('raw', 'policy')
+    config:
+      unique_key: policy_id
+      strategy: timestamp
+      updated_at: load_timestamp
+      hard_deletes: invalidate
+
+    columns:
+      - name: policy_id
+        tests:
+          - not_null
+
+      - name: dbt_scd_id
+        tests:
+          - not_null
+          - unique
+
+      - name: dbt_valid_from
+        tests:
+          - not_null
+
+      - name: dbt_updated_at
+        tests:
+          - not_null

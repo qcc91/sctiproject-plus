@@ -1,0 +1,26 @@
+selectors:
+
+  - name: snapshots
+    definition:
+      method: path
+      value: snapshots
+
+  - name: staging
+    definition:
+      method: path
+      value: models/staging
+
+  - name: intermediate_entities
+    definition:
+      method: path
+      value: models/intermediate/entities
+
+  - name: intermediate_summaries
+    definition:
+      method: path
+      value: models/intermediate/summaries
+
+  - name: marts
+    definition:
+      method: path
+      value: models/marts

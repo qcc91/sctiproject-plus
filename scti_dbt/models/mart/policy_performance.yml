@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: policy_performance
+    description: "Policy-level performance mart combining premium, claim and payment metrics."
+    columns:
+      - name: policy_id
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: premium_amount
+        tests:
+          - not_null
+
+      - name: total_claim_count
+        tests:
+          - not_null
+
+      - name: total_claim_amount
+        tests:
+          - not_null
+
+      - name: total_approved_amount
+        tests:
+          - not_null
+
+      - name: paid_amount
+        tests:
+          - not_null
+
+      - name: loss_ratio
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"

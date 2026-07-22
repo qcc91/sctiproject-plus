@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_policy_payment_summary
+    description: "Aggregated payment metrics at policy level."
+    columns:
+      - name: policy_id
+        tests:
+          - not_null
+          - unique
+
+      - name: payment_count
+        tests:
+          - not_null
+
+      - name: paid_amount
+        tests:
+          - not_null
+
+      - name: refunded_amount
+        tests:
+          - not_null

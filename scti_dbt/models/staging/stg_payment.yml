@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_payment
+    description: "Cleaned payment data from RAW.payment."
+    columns:
+      - name: payment_id
+        tests:
+          - not_null
+          - unique
+
+      - name: policy_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_policy')
+              field: policy_id
+
+      - name: payment_status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['paid', 'refunded', 'failed', 'pending']
+
+      - name: payment_method
+        tests:
+          - accepted_values:
+              values: ['credit card', 'partner billing', 'apple pay', 'debit card', 'bank transfer']
+
+      - name: payment_amount
+        tests:
+          - not_null
+
+      - name: currency
+        tests:
+          - accepted_values:
+              values: ['NZD', 'AUD']
+
+      - name: load_timestamp
+        tests:
+          - not_null

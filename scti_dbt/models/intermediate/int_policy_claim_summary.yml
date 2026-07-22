@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_policy_claim_summary
+    description: "Aggregated claim metrics at policy level."
+    columns:
+      - name: policy_id
+        tests:
+          - not_null
+          - unique
+
+      - name: total_claim_count
+        tests:
+          - not_null
+
+      - name: total_claim_amount
+        tests:
+          - not_null
+
+      - name: total_approved_amount
+        tests:
+          - not_null

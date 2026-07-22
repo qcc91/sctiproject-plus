@@ -1,0 +1,32 @@
+version: 2
+
+snapshots:
+  - name: scd_raw_customer
+    relation: source('raw', 'customer')
+    config:
+      unique_key: customer_id
+      strategy: timestamp
+      updated_at: load_timestamp
+      hard_deletes: invalidate
+
+    columns:
+      - name: customer_id
+        description: "Business key for the customer."
+        tests:
+          - not_null
+
+      - name: dbt_scd_id
+        description: "Unique identifier for each snapshot version."
+        tests:
+          - not_null
+          - unique
+
+      - name: dbt_valid_from
+        description: "Timestamp when this version became valid."
+        tests:
+          - not_null
+
+      - name: dbt_updated_at
+        description: "Timestamp used by dbt to detect changes."
+        tests:
+          - not_null

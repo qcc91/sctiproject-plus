@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: int_policy
+    description: "Policy-level intermediate model with derived policy attributes."
+    columns:
+      - name: policy_id
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_customer')
+              field: customer_id
+
+      - name: policy_number
+        tests:
+          - not_null
+          - unique
+
+      - name: policy_status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['active', 'cancelled', 'expired', 'pending']
+
+      - name: coverage_days
+        tests:
+          - not_null
+
+      - name: premium_amount
+        tests:
+          - not_null
+
+      - name: currency
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['NZD', 'AUD']
+
+      - name: load_timestamp
+        tests:
+          - not_null
