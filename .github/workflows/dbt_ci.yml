@@ -1,0 +1,48 @@
+name: dbt CI
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+    paths:
+      - "scti_dbt/**"
+      - ".github/workflows/dbt_ci.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "scti_dbt/**"
+      - ".github/workflows/dbt_ci.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+
+jobs:
+  dbt-check:
+    name: dbt Project Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Python 3.13
+        run: uv python install 3.13
+
+      - name: Sync Dependencies
+        run: uv sync --locked
+
+      - name: Install dbt Packages
+        working-directory: scti_dbt
+        run: uv run dbt deps
+
+      - name: Parse dbt Project
+        working-directory: scti_dbt
+        run: uv run dbt parse
