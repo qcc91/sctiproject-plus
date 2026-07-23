@@ -45,4 +45,4 @@ models:
 
 snapshots:
   scti_dbt:
-    +target_schema: DEV_SNAPSHOTS
+    +schema: SNAPSHOTS
