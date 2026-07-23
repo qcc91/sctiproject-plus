@@ -34,7 +34,7 @@ jobs:
       SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
       SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
       SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
-      SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+      SNOWFLAKE_PRIVATE_KEY_B64: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_B64 }}
 
     steps:
       - name: Checkout Repository
@@ -54,10 +54,11 @@ jobs:
         run: |
           mkdir -p "$DBT_PROFILES_DIR"
 
-          printf '%s\n' "$SNOWFLAKE_PRIVATE_KEY" \
-            > "$DBT_PROFILES_DIR/dbt_airflow_ci_private_key.p8"
+          printf '%s' "$SNOWFLAKE_PRIVATE_KEY_B64" \
+            | base64 --decode \
+            > "$DBT_PROFILES_DIR/dbt_airflow_ci_key.p8"
 
-          chmod 600 "$DBT_PROFILES_DIR/dbt_airflow_ci_private_key.p8"
+          chmod 600 "$DBT_PROFILES_DIR/dbt_airflow_ci_key.p8"
 
           cat > "$DBT_PROFILES_DIR/profiles.yml" <<EOF
           scti_dbt:
@@ -68,12 +69,12 @@ jobs:
                 type: snowflake
                 account: "${SNOWFLAKE_ACCOUNT}"
                 user: "${SNOWFLAKE_USER}"
+                private_key_path: "${DBT_PROFILES_DIR}/dbt_airflow_ci_key.p8"
                 role: "${SNOWFLAKE_ROLE}"
                 database: "${SNOWFLAKE_DATABASE}"
                 warehouse: "${SNOWFLAKE_WAREHOUSE}"
                 schema: CI
                 threads: 4
-                private_key_path: "${DBT_PROFILES_DIR}/dbt_airflow_ci_private_key.p8"
           EOF
 
       - name: Install dbt Packages
