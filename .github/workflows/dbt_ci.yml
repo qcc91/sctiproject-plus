@@ -95,3 +95,7 @@ jobs:
       - name: Compile dbt Project
         working-directory: scti_dbt
         run: uv run dbt compile --target ci
+
+      - name: Build dbt Project
+        working-directory: scti_dbt
+        run: uv run dbt build --target ci
