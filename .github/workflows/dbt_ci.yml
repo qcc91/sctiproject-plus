@@ -34,7 +34,9 @@ jobs:
       SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
       SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
       SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+
       SNOWFLAKE_PRIVATE_KEY_B64: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_B64 }}
+      SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}
 
     steps:
       - name: Checkout Repository
@@ -70,6 +72,7 @@ jobs:
                 account: "${SNOWFLAKE_ACCOUNT}"
                 user: "${SNOWFLAKE_USER}"
                 private_key_path: "${DBT_PROFILES_DIR}/dbt_airflow_ci_key.p8"
+                private_key_passphrase: "${SNOWFLAKE_PRIVATE_KEY_PASSPHRASE}"
                 role: "${SNOWFLAKE_ROLE}"
                 database: "${SNOWFLAKE_DATABASE}"
                 warehouse: "${SNOWFLAKE_WAREHOUSE}"
