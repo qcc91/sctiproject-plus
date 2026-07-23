@@ -62,20 +62,20 @@ jobs:
 
           chmod 600 "$DBT_PROFILES_DIR/dbt_airflow_ci_key.p8"
 
-          cat > "$DBT_PROFILES_DIR/profiles.yml" <<EOF
+          cat > "$DBT_PROFILES_DIR/profiles.yml" <<'EOF'
           scti_dbt:
             target: ci
 
             outputs:
               ci:
                 type: snowflake
-                account: "${SNOWFLAKE_ACCOUNT}"
-                user: "${SNOWFLAKE_USER}"
-                private_key_path: "${DBT_PROFILES_DIR}/dbt_airflow_ci_key.p8"
-                private_key_passphrase: "${SNOWFLAKE_PRIVATE_KEY_PASSPHRASE}"
-                role: "${SNOWFLAKE_ROLE}"
-                database: "${SNOWFLAKE_DATABASE}"
-                warehouse: "${SNOWFLAKE_WAREHOUSE}"
+                account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+                user: "{{ env_var('SNOWFLAKE_USER') }}"
+                private_key_path: "{{ env_var('DBT_PROFILES_DIR') }}/dbt_airflow_ci_key.p8"
+                private_key_passphrase: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE') }}"
+                role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+                database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+                warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
                 schema: CI
                 threads: 4
           EOF
@@ -91,3 +91,7 @@ jobs:
       - name: Parse dbt Project
         working-directory: scti_dbt
         run: uv run dbt parse --target ci
+
+      - name: Compile dbt Project
+        working-directory: scti_dbt
+        run: uv run dbt compile --target ci
